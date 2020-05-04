@@ -1,30 +1,73 @@
 # testing-demo project
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+The purpose of this project is to show various testing features of Quarkus as well as various handy Maven configurations
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+## Prerequisites
 
-## Running the application in dev mode
+Because the project uses `quarkus-panache-mock` which will be released with Quarkus 1.5, you first need to build Quarkus locally using:
 
-You can run your application in dev mode that enables live coding using:
+```bash
+git clone --branch master --single-branch https://github.com/quarkusio/quarkus && cd quarkus && ./mvnw install -DskipTests -DskipITs -DskipDocs
 ```
-./mvnw quarkus:dev
+
+## Run jvm tests
+
+Using Java 14, execute:
+
+```bash
+mvn clean test
 ```
 
-## Packaging and running the application
+## Run all tests including native
 
-The application can be packaged using `./mvnw package`.
-It produces the `testing-demo-1.0-SNAPSHOT-runner.jar` file in the `/target` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/lib` directory.
+Using Java 11, execute:
 
-The application is now runnable using `java -jar target/testing-demo-1.0-SNAPSHOT-runner.jar`.
+```bash
+mvn clean verify -Dnative
+```
 
-## Creating a native executable
+## Build the application 
 
-You can create a native executable using: `./mvnw package -Pnative`.
+To build the JVM-mode application, using Java 14, execute:
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: `./mvnw package -Pnative -Dquarkus.native.container-build=true`.
+```bash
+mvn package -Dmaven.test.skip=true
+```   
 
-You can then execute your native executable with: `./target/testing-demo-1.0-SNAPSHOT-runner`
+If instead you need to build the native application use,  
 
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/building-native-image.
+```bash
+mvn package -Dmaven.test.skip=true -Dnative
+```
+
+The commands mentioned above skip the tests entirely using `-Dmaven.test.skip=true` as it's assumed they were previously executed. 
+Removing the property will re-enable test execution.
+
+## Run the application
+
+To run the application, a postgresql instance needs to be running locally. 
+
+The easiest way to do that is using docker like so:
+
+```bash
+docker run --ulimit memlock=-1:-1 -it --rm=true --memory-swappiness=0 --name quarkus_test -e POSTGRES_USER=quarkus_test -e POSTGRES_PASSWORD=quarkus_test -e POSTGRES_DB=quarkus_test -p 5432:5432 postgres:11.7
+```
+
+The database still needs to be created and potentially be seeded with data. For testing purposes only, the application can be built with
+
+```properties
+%prod.quarkus.hibernate-orm.database.generation=drop-and-create
+%prod.quarkus.hibernate-orm.sql-load-script=import.sql
+```
+
+The JVM mode application can be start with:
+
+```bash
+java -Dquarkus.datasource.username=quarkus_test -Dquarkus.datasource.password=quarkus_test -jar target/testing-demo-1.0-SNAPSHOT-runner.jar
+```     
+
+The native application can be start with:
+
+```bash
+./target/testing-demo-1.0-SNAPSHOT-runner -Dquarkus.datasource.username=quarkus_test -Dquarkus.datasource.password=quarkus_test
+```
