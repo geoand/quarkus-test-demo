@@ -17,6 +17,7 @@
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <quarkus.platform.version>1.4.1.Final</quarkus.platform.version>
     <surefire-plugin.version>2.22.1</surefire-plugin.version>
+    <compiler.args>--enable-preview</compiler.args>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -99,7 +100,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${compiler-plugin.version}</version>
         <configuration>
-          <compilerArgs>--enable-preview</compilerArgs>
+          <compilerArgs>${compiler.args}</compilerArgs>
         </configuration>
       </plugin>
       <plugin>
@@ -112,6 +113,10 @@
           <argLine>--enable-preview</argLine>
         </configuration>
         <executions>
+          <!--
+            The purpose of this surefire configuration is to show how to use multiple configurations if needed
+            We override 'default-test' to exclude the Fruit tests, which we then include in the 'fruit' configuration
+          -->
           <execution>
             <id>default-test</id>
             <phase>test</phase>
@@ -152,6 +157,25 @@
       </activation>
       <build>
         <plugins>
+          <!-- skip Java 14 specific test in native -->
+          <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>${compiler-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>default-testCompile</id>
+                <phase>test-compile</phase>
+                <configuration>
+                  <testExcludes>
+                    <exclude>**/WiremockCountries.java</exclude>
+                  </testExcludes>
+                </configuration>
+                <goals>
+                  <goal>testCompile</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
             <version>${surefire-plugin.version}</version>
@@ -172,7 +196,11 @@
         </plugins>
       </build>
       <properties>
+        <!-- make sure that in native mode we use Java 11 -->
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <quarkus.package.type>native</quarkus.package.type>
+        <compiler.args/>
       </properties>
     </profile>
   </profiles>
