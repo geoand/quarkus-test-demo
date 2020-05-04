@@ -18,6 +18,7 @@
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <surefire-plugin.version>2.22.1</surefire-plugin.version>
     <preview.arg>--enable-preview</preview.arg>
+    <logmanager.class>org.jboss.logmanager.LogManager</logmanager.class>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -113,7 +114,7 @@
         <version>${surefire-plugin.version}</version>
         <configuration>
           <systemProperties>
-            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
           </systemProperties>
           <argLine>${preview.arg}</argLine>
         </configuration>
@@ -130,7 +131,7 @@
             </goals>
             <configuration>
               <systemProperties>
-                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
               </systemProperties>
               <excludes>**/fruit/**.java</excludes>
             </configuration>
@@ -143,7 +144,7 @@
             </goals>
             <configuration>
               <systemProperties>
-                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                <java.util.logging.manager>${logmanager.class}</java.util.logging.manager>
               </systemProperties>
               <includes>**/fruit/**.java</includes>
             </configuration>
