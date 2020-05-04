@@ -111,6 +111,34 @@
           </systemProperties>
           <argLine>--enable-preview</argLine>
         </configuration>
+        <executions>
+          <execution>
+            <id>default-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <systemProperties>
+                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+              </systemProperties>
+              <excludes>**/fruit/**.java</excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>fruit</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <systemProperties>
+                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+              </systemProperties>
+              <includes>**/fruit/**.java</includes>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 	</plugins>
   </build>
