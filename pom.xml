@@ -17,7 +17,7 @@
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <quarkus.platform.version>1.4.1.Final</quarkus.platform.version>
     <surefire-plugin.version>2.22.1</surefire-plugin.version>
-    <compiler.args>--enable-preview</compiler.args>
+    <preview.arg>--enable-preview</preview.arg>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -100,7 +100,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${compiler-plugin.version}</version>
         <configuration>
-          <compilerArgs>${compiler.args}</compilerArgs>
+          <compilerArgs>${preview.arg}</compilerArgs>
         </configuration>
       </plugin>
       <plugin>
@@ -110,7 +110,7 @@
           <systemProperties>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
           </systemProperties>
-          <argLine>--enable-preview</argLine>
+          <argLine>${preview.arg}</argLine>
         </configuration>
         <executions>
           <!--
@@ -199,8 +199,11 @@
         <!-- make sure that in native mode we use Java 11 -->
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+
         <quarkus.package.type>native</quarkus.package.type>
-        <compiler.args/>
+
+        <!-- since we can only use Java 11, turn off preview -->
+        <preview.arg/>
       </properties>
     </profile>
   </profiles>
