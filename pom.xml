@@ -51,13 +51,6 @@
 
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-hibernate-orm-panache-deployment</artifactId>
-      <version>${quarkus-plugin.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5-mockito</artifactId>
       <scope>test</scope>
     </dependency>
@@ -105,9 +98,24 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${compiler-plugin.version}</version>
-        <configuration>
-          <compilerArgs>${preview.arg}</compilerArgs>
-        </configuration>
+        <!--
+          Override 'default-testCompile' execution in order to add the compiler args to it
+          We don't add the flag to compiler plugin configuration since we only need the tests to be compiled with preview
+          This makes it possible to 'mvn clean package -Dmaven.test.skip=true' which skips test compilation
+          so we can then run 'java -jar ....' without having to enable the preview features
+        -->
+        <executions>
+          <execution>
+            <id>default-testCompile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration>
+              <compilerArgs>${preview.arg}</compilerArgs>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -173,15 +181,6 @@
                 <exclude>org/acme/getting/started/country/RegularCountriesServiceTest.java</exclude>
               </testExcludes>
             </configuration>
-            <executions>
-              <execution>
-                <id>default-testCompile</id>
-                <phase>test-compile</phase>
-                <goals>
-                  <goal>testCompile</goal>
-                </goals>
-              </execution>
-            </executions>
           </plugin>
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
