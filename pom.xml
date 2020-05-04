@@ -167,15 +167,16 @@
           <plugin>
             <artifactId>maven-compiler-plugin</artifactId>
             <version>${compiler-plugin.version}</version>
+            <configuration>
+              <testExcludes>
+                <exclude>org/acme/getting/started/country/WiremockCountries.java</exclude>
+                <exclude>org/acme/getting/started/country/RegularCountriesServiceTest.java</exclude>
+              </testExcludes>
+            </configuration>
             <executions>
               <execution>
                 <id>default-testCompile</id>
                 <phase>test-compile</phase>
-                <configuration>
-                  <testExcludes>
-                    <exclude>**/WiremockCountries.java</exclude>
-                  </testExcludes>
-                </configuration>
                 <goals>
                   <goal>testCompile</goal>
                 </goals>

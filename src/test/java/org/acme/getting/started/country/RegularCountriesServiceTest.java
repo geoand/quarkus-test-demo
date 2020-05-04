@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
-//@QuarkusTestResource(WiremockCountries.class)
+@QuarkusTestResource(WiremockCountries.class)
 class RegularCountriesServiceTest {
 
 	@Inject
@@ -19,7 +19,7 @@ class RegularCountriesServiceTest {
 
 	@Test
 	void testGR() {
-		assertThat(countriesService.getByName("GR")).hasSize(10).extracting("name").contains("Greece");
-//		assertThat(countriesService.getByName("GR")).hasSize(1).extracting("name").contains("Ελλάδα");
+//		assertThat(countriesService.getByName("GR")).hasSize(10).extracting("name").contains("Greece");
+		assertThat(countriesService.getByName("GR")).hasSize(1).extracting("name").contains("Ελλάδα");
 	}
 }
